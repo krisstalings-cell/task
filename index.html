@@ -1,0 +1,507 @@
+<!DOCTYPE html>
+<html lang="fa" dir="rtl">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<title>AGI_CORE Task</title>
+
+<script src="https://telegram.org/js/telegram-web-app.js"></script>
+
+<style>
+* {
+box-sizing: border-box;
+}
+
+body {
+margin: 0;
+font-family: Arial, sans-serif;
+background: #07111f;
+color: #ffffff;
+}
+
+.app {
+max-width: 600px;
+margin: auto;
+min-height: 100vh;
+padding-bottom: 80px;
+}
+
+header {
+padding: 22px 18px;
+background: #0b192b;
+border-bottom: 1px solid #1b3048;
+}
+
+header h1 {
+margin: 0;
+font-size: 24px;
+}
+
+header p {
+margin: 8px 0 0;
+color: #91a4b8;
+font-size: 14px;
+}
+
+.page {
+display: none;
+padding: 18px;
+}
+
+.page.active {
+display: block;
+}
+
+.card {
+background: #0d1d30;
+border: 1px solid #1b3048;
+border-radius: 16px;
+padding: 18px;
+margin-bottom: 14px;
+}
+
+.card h2 {
+margin-top: 0;
+font-size: 19px;
+}
+
+.task {
+padding: 14px;
+border-radius: 12px;
+background: #10243a;
+margin-top: 10px;
+}
+
+.task-title {
+font-weight: bold;
+margin-bottom: 6px;
+}
+
+.task-info {
+color: #91a4b8;
+font-size: 13px;
+}
+
+button {
+width: 100%;
+border: 0;
+border-radius: 12px;
+padding: 14px;
+margin-top: 10px;
+font-size: 15px;
+cursor: pointer;
+background: #1769aa;
+color: white;
+}
+
+button.secondary {
+background: #162b42;
+}
+
+.status {
+display: flex;
+justify-content: space-between;
+padding: 10px 0;
+border-bottom: 1px solid #1b3048;
+}
+
+.status:last-child {
+border-bottom: 0;
+}
+
+nav {
+position: fixed;
+bottom: 0;
+left: 0;
+right: 0;
+background: #0b192b;
+border-top: 1px solid #1b3048;
+display: flex;
+justify-content: space-around;
+padding: 8px;
+z-index: 10;
+}
+
+nav button {
+width: auto;
+flex: 1;
+margin: 0 3px;
+padding: 11px 5px;
+background: transparent;
+color: #91a4b8;
+font-size: 12px;
+}
+
+nav button.active {
+color: white;
+background: #162b42;
+}
+
+.welcome {
+font-size: 18px;
+margin-bottom: 15px;
+}
+
+.loading {
+text-align: center;
+color: #91a4b8;
+padding: 20px;
+}
+
+.error {
+color: #ff8f8f;
+background: #321b1b;
+padding: 12px;
+border-radius: 10px;
+margin-top: 10px;
+}
+</style>
+</head>
+
+<body>
+
+<div class="app">
+
+<header>
+<h1>AGI_CORE</h1>
+<p>Task Management System</p>
+</header>
+
+<!-- HOME -->
+<section id="home" class="page active">
+
+<div class="card">
+<div id="welcome" class="welcome">
+خوش آمدی 👋
+</div>
+
+<h2>🧠 مرکز کنترل پروژه</h2>
+
+<button onclick="showPage('tasks')">
+📋 Taskها
+</button>
+
+<button onclick="showPage('planner')">
+🧠 برنامه پیشنهادی
+</button>
+
+<button onclick="showPage('status')">
+📊 وضعیت پروژه
+</button>
+</div>
+
+<div class="card">
+<h2>🎯 وضعیت فعلی</h2>
+
+<div class="status">
+<span>کل Taskها</span>
+<strong id="total">-</strong>
+</div>
+
+<div class="status">
+<span>تکمیل‌شده</span>
+<strong id="completed">-</strong>
+</div>
+
+<div class="status">
+<span>در انتظار</span>
+<strong id="pending">-</strong>
+</div>
+
+<button class="secondary" onclick="loadDashboard()">
+🔄 بروزرسانی
+</button>
+</div>
+
+</section>
+
+<!-- TASKS -->
+<section id="tasks" class="page">
+
+<div class="card">
+<h2>📋 Taskها</h2>
+
+<div id="taskList">
+<div class="loading">
+در حال دریافت Taskها...
+</div>
+</div>
+</div>
+
+</section>
+
+<!-- PLANNER -->
+<section id="planner" class="page">
+
+<div class="card">
+<h2>🧠 برنامه پیشنهادی</h2>
+
+<p>
+این بخش در مرحله بعد به Planner واقعی AGI_CORE متصل می‌شود.
+</p>
+
+<button onclick="requestPlan()">
+▶️ دریافت برنامه پیشنهادی
+</button>
+
+<div id="planResult"></div>
+</div>
+
+</section>
+
+<!-- STATUS -->
+<section id="status" class="page">
+
+<div class="card">
+<h2>📊 وضعیت پروژه</h2>
+
+<div class="status">
+<span>کل Taskها</span>
+<strong id="s_total">-</strong>
+</div>
+
+<div class="status">
+<span>تکمیل‌شده</span>
+<strong id="s_completed">-</strong>
+</div>
+
+<div class="status">
+<span>در انتظار</span>
+<strong id="s_pending">-</strong>
+</div>
+
+<div class="status">
+<span>در حال اجرا</span>
+<strong id="s_progress">-</strong>
+</div>
+
+<div class="status">
+<span>به تعویق افتاده</span>
+<strong id="s_deferred">-</strong>
+</div>
+</div>
+
+</section>
+
+</div>
+
+<!-- NAVIGATION -->
+
+<nav>
+
+<button id="navHome" class="active" onclick="showPage('home')">
+🏠 خانه
+</button>
+
+<button id="navTasks" onclick="showPage('tasks')">
+📋 Task
+</button>
+
+<button id="navPlanner" onclick="showPage('planner')">
+🧠 Planner
+</button>
+
+<button id="navStatus" onclick="showPage('status')">
+📊 وضعیت
+</button>
+
+</nav>
+
+<script>
+
+const tg =
+window.Telegram &&
+Telegram.WebApp
+? Telegram.WebApp
+: null;
+
+if (tg) {
+
+tg.ready();
+tg.expand();
+
+try {
+tg.setHeaderColor("#07111f");
+tg.setBackgroundColor("#07111f");
+} catch (e) {}
+
+if (
+tg.initDataUnsafe &&
+tg.initDataUnsafe.user
+) {
+
+const user =
+tg.initDataUnsafe.user;
+
+document.getElementById("welcome").textContent =
+"خوش آمدی " +
+(user.first_name || "دوست") +
+" 👋";
+}
+}
+
+/*
+• بعداً این آدرس را با آدرس عمومی HTTPS
+• سرور AGI_CORE جایگزین می‌کنیم.
+• فعلاً API روی localhost است و GitHub
+• نمی‌تواند به آن دسترسی داشته باشد.
+*/
+
+const API_URL = "";
+
+function showPage(page) {
+
+document
+.querySelectorAll(".page")
+.forEach(function (element) {
+element.classList.remove("active");
+});
+
+const target =
+document.getElementById(page);
+
+if (target) {
+target.classList.add("active");
+}
+
+document
+.querySelectorAll("nav button")
+.forEach(function (button) {
+button.classList.remove("active");
+});
+
+if (page === "home") {
+document
+.getElementById("navHome")
+.classList.add("active");
+}
+
+if (page === "tasks") {
+document
+.getElementById("navTasks")
+.classList.add("active");
+
+loadTasks();
+}
+
+if (page === "planner") {
+document
+.getElementById("navPlanner")
+.classList.add("active");
+}
+
+if (page === "status") {
+document
+.getElementById("navStatus")
+.classList.add("active");
+}
+}
+
+async function loadDashboard() {
+
+if (!API_URL) {
+return;
+}
+
+try {
+
+const response =
+await fetch(
+API_URL + "/dashboard"
+);
+
+const data =
+await response.json();
+
+if (data.status) {
+
+document.getElementById("total").textContent =
+data.status.total;
+
+document.getElementById("completed").textContent =
+data.status.completed;
+
+document.getElementById("pending").textContent =
+data.status.pending;
+}
+
+} catch (error) {
+
+console.log(error);
+}
+}
+
+async function loadTasks() {
+
+const container =
+document.getElementById("taskList");
+
+if (!API_URL) {
+
+container.innerHTML = &lt;div class="loading"&gt; 🔌 اتصال API هنوز فعال نشده است. &lt;br&gt;&lt;br&gt; سرور AGI_CORE آماده است؛ در مرحله بعد آدرس عمومی API را وصل می‌کنیم. &lt;/div&gt;;
+
+return;
+}
+
+try {
+
+const response =
+await fetch(
+API_URL + "/tasks"
+);
+
+const tasks =
+await response.json();
+
+if (!tasks.length) {
+
+container.innerHTML =
+"<div class='loading'>Taskی وجود ندارد.</div>";
+
+return;
+}
+
+container.innerHTML = "";
+
+tasks.forEach(function(task) {
+
+const div =
+document.createElement("div");
+
+div.className = "task";
+
+div.innerHTML = &lt;div class="task-title"&gt; #${task.id} — `${task.title}
+</div>
+
+<div class="task-info">
+وضعیت: $`{task.status}
+</div>
+
+<div class="task-info">
+زمان: ${task.estimated_minutes || 0} دقیقه &lt;/div&gt;;
+
+container.appendChild(div);
+});
+
+} catch (error) {
+
+container.innerHTML =
+"<div class='error'>خطا در اتصال به API</div>";
+}
+}
+
+function requestPlan() {
+
+const result =
+document.getElementById("planResult");
+
+result.innerHTML = &lt;div class="loading"&gt; 🧠 Planner در مرحله اتصال به API قرار دارد. &lt;/div&gt;;
+}
+
+loadDashboard();
+
+</script>
+
+</body>
+</html>
