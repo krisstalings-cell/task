@@ -615,6 +615,14 @@ result.innerHTML =
 "🧠 در حال ساخت برنامه پیشنهادی..." +
 "</div>";
 
+if (!tg || !tg.initData) {
+result.innerHTML =
+"<div class='loading'>" +
+"❌ Telegram initData وجود ندارد." +
+"</div>";
+return;
+}
+
 try {
 
 const response =
