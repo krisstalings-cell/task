@@ -1,14 +1,19 @@
 <!DOCTYPE html>
 <html lang="fa" dir="rtl">
+
 <head>
+
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<meta name="viewport"
+content="width=device-width, initial-scale=1.0">
 
 <title>AGI_CORE Task</title>
 
 <script src="https://telegram.org/js/telegram-web-app.js"></script>
 
 <style>
+
 * {
 box-sizing: border-box;
 }
@@ -81,6 +86,7 @@ margin-bottom: 6px;
 .task-info {
 color: #91a4b8;
 font-size: 13px;
+margin-top: 4px;
 }
 
 button {
@@ -97,6 +103,19 @@ color: white;
 
 button.secondary {
 background: #162b42;
+}
+
+button.approve {
+background: #16804a;
+}
+
+button.reject {
+background: #8b3030;
+}
+
+button:disabled {
+opacity: 0.5;
+cursor: not-allowed;
 }
 
 .status {
@@ -156,7 +175,30 @@ padding: 12px;
 border-radius: 10px;
 margin-top: 10px;
 }
+
+.success {
+color: #8ff0b5;
+background: #123b29;
+padding: 12px;
+border-radius: 10px;
+margin-top: 10px;
+}
+
+.plan-box {
+background: #10243a;
+border: 1px solid #1b3048;
+border-radius: 14px;
+padding: 15px;
+margin-top: 14px;
+line-height: 1.8;
+}
+
+.plan-actions {
+margin-top: 14px;
+}
+
 </style>
+
 </head>
 
 <body>
@@ -164,9 +206,17 @@ margin-top: 10px;
 <div class="app">
 
 <header>
+
 <h1>AGI_CORE</h1>
+
 <p>Task Management System</p>
+
 </header>
+
+
+<!-- =====================================================
+HOME
+===================================================== -->
 
 <section id="home" class="page active">
 
@@ -192,32 +242,61 @@ margin-top: 10px;
 
 </div>
 
+
 <div class="card">
 
 <h2>🎯 وضعیت فعلی</h2>
 
 <div class="status">
+
 <span>کل Taskها</span>
-<strong id="total">-</strong>
+
+<strong id="total">
+-
+</strong>
+
 </div>
 
+
 <div class="status">
+
 <span>تکمیل‌شده</span>
-<strong id="completed">-</strong>
+
+<strong id="completed">
+-
+</strong>
+
 </div>
+
 
 <div class="status">
+
 <span>در انتظار</span>
-<strong id="pending">-</strong>
+
+<strong id="pending">
+-
+</strong>
+
 </div>
 
-<button class="secondary" onclick="loadDashboard()">
+
+<button
+class="secondary"
+onclick="loadDashboard()">
+
 🔄 بروزرسانی
+
 </button>
 
 </div>
 
 </section>
+
+
+
+<!-- =====================================================
+TASKS
+===================================================== -->
 
 <section id="tasks" class="page">
 
@@ -226,14 +305,22 @@ margin-top: 10px;
 <h2>📋 Taskها</h2>
 
 <div id="taskList">
+
 <div class="loading">
 در حال دریافت Taskها...
 </div>
+
 </div>
 
 </div>
 
 </section>
+
+
+
+<!-- =====================================================
+PLANNER
+===================================================== -->
 
 <section id="planner" class="page">
 
@@ -242,12 +329,17 @@ margin-top: 10px;
 <h2>🧠 برنامه پیشنهادی</h2>
 
 <p>
-این بخش در مرحله بعد به Planner واقعی AGI_CORE متصل می‌شود.
+Planner بر اساس وضعیت فعلی پروژه برایت برنامه پیشنهاد می‌کند.
 </p>
 
-<button onclick="requestPlan()">
+
+<button
+onclick="requestPlan()">
+
 ▶️ دریافت برنامه پیشنهادی
+
 </button>
+
 
 <div id="planResult"></div>
 
@@ -255,35 +347,71 @@ margin-top: 10px;
 
 </section>
 
+
+
+<!-- =====================================================
+STATUS
+===================================================== -->
+
 <section id="status" class="page">
 
 <div class="card">
 
 <h2>📊 وضعیت پروژه</h2>
 
+
 <div class="status">
+
 <span>کل Taskها</span>
-<strong id="s_total">-</strong>
+
+<strong id="s_total">
+-
+</strong>
+
 </div>
 
+
 <div class="status">
+
 <span>تکمیل‌شده</span>
-<strong id="s_completed">-</strong>
+
+<strong id="s_completed">
+-
+</strong>
+
 </div>
 
+
 <div class="status">
+
 <span>در انتظار</span>
-<strong id="s_pending">-</strong>
+
+<strong id="s_pending">
+-
+</strong>
+
 </div>
 
+
 <div class="status">
+
 <span>در حال اجرا</span>
-<strong id="s_progress">-</strong>
+
+<strong id="s_progress">
+-
+</strong>
+
 </div>
 
+
 <div class="status">
+
 <span>به تعویق افتاده</span>
-<strong id="s_deferred">-</strong>
+
+<strong id="s_deferred">
+-
+</strong>
+
 </div>
 
 </div>
@@ -292,32 +420,60 @@ margin-top: 10px;
 
 </div>
 
+
+
+<!-- =====================================================
+NAVIGATION
+===================================================== -->
+
 <nav>
 
-<button id="navHome"
+<button
+id="navHome"
 class="active"
 onclick="showPage('home')">
+
 🏠 خانه
+
 </button>
 
-<button id="navTasks"
+
+<button
+id="navTasks"
 onclick="showPage('tasks')">
+
 📋 Task
+
 </button>
 
-<button id="navPlanner"
+
+<button
+id="navPlanner"
 onclick="showPage('planner')">
+
 🧠 Planner
+
 </button>
 
-<button id="navStatus"
+
+<button
+id="navStatus"
 onclick="showPage('status')">
+
 📊 وضعیت
+
 </button>
 
 </nav>
 
+
+
 <script>
+
+
+// =========================================================
+// TELEGRAM
+// =========================================================
 
 const tg =
 window.Telegram &&
@@ -325,15 +481,25 @@ window.Telegram.WebApp
 ? window.Telegram.WebApp
 : null;
 
+
 if (tg) {
 
 tg.ready();
+
 tg.expand();
 
 try {
-tg.setHeaderColor("#07111f");
-tg.setBackgroundColor("#07111f");
+
+tg.setHeaderColor(
+"#07111f"
+);
+
+tg.setBackgroundColor(
+"#07111f"
+);
+
 } catch (e) {}
+
 
 if (
 tg.initDataUnsafe &&
@@ -343,7 +509,9 @@ tg.initDataUnsafe.user
 const user =
 tg.initDataUnsafe.user;
 
-document.getElementById("welcome").textContent =
+document
+.getElementById("welcome")
+.textContent =
 "خوش آمدی " +
 (user.first_name || "دوست") +
 " 👋";
@@ -352,76 +520,118 @@ document.getElementById("welcome").textContent =
 
 }
 
+
+
+// =========================================================
+// API
+// =========================================================
+
 const API_URL =
 "https://currently-textile-plates-briefing.trycloudflare.com";
 
 
+
+// =========================================================
+// TELEGRAM HEADERS
+// =========================================================
+
 function getTelegramHeaders() {
 
 return {
+
 "X-Telegram-Init-Data":
 tg ? tg.initData : ""
+
 };
 
 }
 
 
+
+// =========================================================
+// PAGE NAVIGATION
+// =========================================================
+
 function showPage(page) {
+
 
 document
 .querySelectorAll(".page")
 .forEach(function(element) {
 
-element.classList.remove("active");
+element.classList.remove(
+"active"
+);
 
 });
+
 
 const target =
 document.getElementById(page);
 
+
 if (target) {
-target.classList.add("active");
+
+target.classList.add(
+"active"
+);
+
 }
+
 
 document
 .querySelectorAll("nav button")
 .forEach(function(button) {
 
-button.classList.remove("active");
+button.classList.remove(
+"active"
+);
 
 });
+
 
 if (page === "home") {
 
 document
 .getElementById("navHome")
-.classList.add("active");
+.classList.add(
+"active"
+);
 
 }
+
 
 if (page === "tasks") {
 
 document
 .getElementById("navTasks")
-.classList.add("active");
+.classList.add(
+"active"
+);
 
 loadTasks();
 
 }
 
+
 if (page === "planner") {
 
 document
 .getElementById("navPlanner")
-.classList.add("active");
+.classList.add(
+"active"
+);
 
 }
+
 
 if (page === "status") {
 
 document
 .getElementById("navStatus")
-.classList.add("active");
+.classList.add(
+"active"
+);
 
 loadDashboard();
 
@@ -430,74 +640,130 @@ loadDashboard();
 }
 
 
+
+// =========================================================
+// DASHBOARD
+// =========================================================
+
 async function loadDashboard() {
+
 
 if (!API_URL) {
 return;
 }
 
+
 try {
+
 
 const response =
 await fetch(
-API_URL + "/dashboard",
+
+API_URL +
+"/dashboard",
+
 {
-headers: getTelegramHeaders()
+
+headers:
+getTelegramHeaders()
+
 }
+
 );
+
 
 if (!response.ok) {
 
 throw new Error(
-"HTTP " + response.status
+"HTTP " +
+response.status
 );
 
 }
 
+
 const data =
 await response.json();
 
+
 if (data.status) {
 
-document.getElementById("total").textContent =
+
+document
+.getElementById("total")
+.textContent =
 data.status.total;
 
-document.getElementById("completed").textContent =
+
+document
+.getElementById("completed")
+.textContent =
 data.status.completed;
 
-document.getElementById("pending").textContent =
+
+document
+.getElementById("pending")
+.textContent =
 data.status.pending;
 
-document.getElementById("s_total").textContent =
+
+document
+.getElementById("s_total")
+.textContent =
 data.status.total;
 
-document.getElementById("s_completed").textContent =
+
+document
+.getElementById("s_completed")
+.textContent =
 data.status.completed;
 
-document.getElementById("s_pending").textContent =
+
+document
+.getElementById("s_pending")
+.textContent =
 data.status.pending;
 
-document.getElementById("s_progress").textContent =
+
+document
+.getElementById("s_progress")
+.textContent =
 data.status.in_progress;
 
-document.getElementById("s_deferred").textContent =
+
+document
+.getElementById("s_deferred")
+.textContent =
 data.status.deferred;
 
 }
 
+
 } catch (error) {
 
-console.log("Dashboard error:", error);
+console.log(
+"Dashboard error:",
+error
+);
 
 }
 
 }
 
+
+
+// =========================================================
+// TASKS
+// =========================================================
 
 async function loadTasks() {
 
+
 const container =
-document.getElementById("taskList");
+document.getElementById(
+"taskList"
+);
+
 
 if (!API_URL) {
 
@@ -510,28 +776,44 @@ return;
 
 }
 
+
 try {
+
 
 const response =
 await fetch(
-API_URL + "/tasks",
+
+API_URL +
+"/tasks",
+
 {
-headers: getTelegramHeaders()
+
+headers:
+getTelegramHeaders()
+
 }
+
 );
+
 
 if (!response.ok) {
 
 throw new Error(
-"HTTP " + response.status
+"HTTP " +
+response.status
 );
 
 }
 
+
 const tasks =
 await response.json();
 
-if (!Array.isArray(tasks) || !tasks.length) {
+
+if (
+!Array.isArray(tasks) ||
+!tasks.length
+) {
 
 container.innerHTML =
 "<div class='loading'>" +
@@ -542,58 +824,101 @@ return;
 
 }
 
+
 container.innerHTML = "";
 
-tasks.forEach(function(task) {
+
+tasks.forEach(
+function(task) {
+
 
 const div =
-document.createElement("div");
+document.createElement(
+"div"
+);
 
-div.className = "task";
+div.className =
+"task";
+
 
 const title =
-document.createElement("div");
+document.createElement(
+"div"
+);
 
 title.className =
 "task-title";
 
+
 title.textContent =
-"#" + task.id +
+"#" +
+task.id +
 " — " +
-(task.title || "بدون عنوان");
+(task.title ||
+"بدون عنوان");
+
 
 const status =
-document.createElement("div");
+document.createElement(
+"div"
+);
 
 status.className =
 "task-info";
 
+
 status.textContent =
 "وضعیت: " +
-(task.status || "-");
+(task.status ||
+"-");
+
 
 const time =
-document.createElement("div");
+document.createElement(
+"div"
+);
 
 time.className =
 "task-info";
 
+
 time.textContent =
 "زمان: " +
-(task.estimated_minutes || 0) +
+(task.estimated_minutes ||
+0) +
 " دقیقه";
 
-div.appendChild(title);
-div.appendChild(status);
-div.appendChild(time);
 
-container.appendChild(div);
+div.appendChild(
+title
+);
 
-});
+div.appendChild(
+status
+);
+
+div.appendChild(
+time
+);
+
+
+container.appendChild(
+div
+);
+
+}
+
+);
+
 
 } catch (error) {
 
-console.log("Tasks error:", error);
+
+console.log(
+"Tasks error:",
+error
+);
+
 
 container.innerHTML =
 "<div class='error'>" +
@@ -605,56 +930,170 @@ container.innerHTML =
 }
 
 
+
+// =========================================================
+// REQUEST PLANNER
+// =========================================================
+
 async function requestPlan() {
 
+
 const result =
-document.getElementById("planResult");
+document.getElementById(
+"planResult"
+);
+
 
 result.innerHTML =
 "<div class='loading'>" +
 "🧠 در حال ساخت برنامه پیشنهادی..." +
 "</div>";
 
+
 if (!tg || !tg.initData) {
+
 result.innerHTML =
-"<div class='loading'>" +
+"<div class='error'>" +
 "❌ Telegram initData وجود ندارد." +
 "</div>";
+
 return;
+
 }
+
 
 try {
 
+
 const response =
 await fetch(
-API_URL + "/planner",
+
+API_URL +
+"/planner",
+
 {
-headers: getTelegramHeaders()
+
+method: "GET",
+
+headers:
+getTelegramHeaders()
+
 }
+
 );
+
 
 const data =
 await response.json();
 
+
 if (!response.ok) {
+
 throw new Error(
+
 data.message ||
 data.error ||
 "خطا در دریافت برنامه"
+
 );
+
 }
+
+
+const tasks =
+Array.isArray(data.tasks)
+? data.tasks
+: [];
+
+
+if (!tasks.length) {
 
 result.innerHTML =
 "<div class='plan-box'>" +
-(data.plan || data.formatted || JSON.stringify(data)) +
+
+(data.plan ||
+data.formatted ||
+"⚠️ برنامه‌ای پیدا نشد.")
+
++
+
 "</div>";
+
+return;
+
+}
+
+
+window.currentPlan = {
+
+tasks:
+tasks,
+
+available_minutes:
+data.available_minutes ||
+60,
+
+energy_level:
+data.energy_level ||
+"medium"
+
+};
+
+
+result.innerHTML =
+
+"<div class='plan-box'>" +
+
+(data.plan ||
+data.formatted ||
+"برنامه آماده است.")
+
++
+
+"</div>" +
+
+"<div class='plan-actions'>" +
+
+"<button " +
+
+"class='approve' " +
+
+"onclick='approveCurrentPlan()'>" +
+
+"✅ تأیید برنامه" +
+
+"</button>" +
+
+"<button " +
+
+"class='reject' " +
+
+"onclick='rejectCurrentPlan()'>" +
+
+"❌ رد برنامه" +
+
+"</button>" +
+
+"</div>";
+
+
 
 } catch (error) {
 
+
+console.log(
+"Planner error:",
+error
+);
+
+
 result.innerHTML =
-"<div class='loading'>" +
+"<div class='error'>" +
+
 "❌ خطا: " +
+
 error.message +
+
 "</div>";
 
 }
@@ -662,9 +1101,228 @@ error.message +
 }
 
 
+
+// =========================================================
+// APPROVE PLAN
+// =========================================================
+
+async function approveCurrentPlan() {
+
+
+const result =
+document.getElementById(
+"planResult"
+);
+
+
+if (
+!window.currentPlan ||
+!window.currentPlan.tasks
+) {
+
+result.innerHTML =
+"<div class='error'>" +
+
+"⚠️ ابتدا یک برنامه دریافت کن."
+
++
+
+"</div>";
+
+return;
+
+}
+
+
+result.innerHTML =
+"<div class='loading'>" +
+
+"💾 در حال ثبت برنامه تأییدشده..."
+
++
+
+"</div>";
+
+
+try {
+
+
+const response =
+await fetch(
+
+API_URL +
+"/planner/approve",
+
+{
+
+method: "POST",
+
+headers: {
+
+"Content-Type":
+"application/json",
+
+"X-Telegram-Init-Data":
+tg ? tg.initData : ""
+
+},
+
+body: JSON.stringify({
+
+tasks:
+window.currentPlan.tasks,
+
+available_minutes:
+window.currentPlan.available_minutes,
+
+energy_level:
+window.currentPlan.energy_level,
+
+user_note: ""
+
+})
+
+}
+
+);
+
+
+const data =
+await response.json();
+
+
+if (!response.ok) {
+
+throw new Error(
+
+data.message ||
+data.error ||
+"خطا در تأیید برنامه"
+
+);
+
+}
+
+
+const approved =
+data.approved_plan;
+
+
+result.innerHTML =
+
+"<div class='success'>" +
+
+"✅ برنامه با موفقیت تأیید شد."
+
++
+
+"</div>" +
+
+"<div class='plan-box'>" +
+
+"🆔 برنامه تأییدشده #" +
+
+(approved.id || "-") +
+
+"<br><br>" +
+
+"📋 تعداد Taskها: " +
+
+(approved.task_ids || []).length +
+
+"<br>" +
+
+"⏱ زمان: " +
+
+(approved.available_minutes || 0) +
+
+" دقیقه" +
+
+"<br>" +
+
+"⚡ انرژی: " +
+
+(approved.energy_level || "medium") +
+
+"</div>";
+
+
+window.currentPlan = null;
+
+
+} catch (error) {
+
+
+console.log(
+"Approval error:",
+error
+);
+
+
+result.innerHTML =
+"<div class='error'>" +
+
+"❌ خطا در تأیید: " +
+
+error.message +
+
+"</div>";
+
+}
+
+}
+
+
+
+// =========================================================
+// REJECT PLAN
+// =========================================================
+
+function rejectCurrentPlan() {
+
+
+const result =
+document.getElementById(
+"planResult"
+);
+
+
+window.currentPlan = null;
+
+
+result.innerHTML =
+
+"<div class='success'>" +
+
+"❌ این پیشنهاد رد شد."
+
++
+
+"</div>" +
+
+"<button " +
+
+"class='secondary' " +
+
+"onclick='requestPlan()'>" +
+
+"🔄 ساخت پیشنهاد جدید" +
+
+"</button>";
+
+}
+
+
+
+// =========================================================
+// INITIAL LOAD
+// =========================================================
+
 loadDashboard();
+
 
 </script>
 
 </body>
+
 </html>
