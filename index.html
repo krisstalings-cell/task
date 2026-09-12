@@ -168,10 +168,10 @@ margin-top: 10px;
 <p>Task Management System</p>
 </header>
 
-<!-- HOME -->
 <section id="home" class="page active">
 
 <div class="card">
+
 <div id="welcome" class="welcome">
 خوش آمدی 👋
 </div>
@@ -189,9 +189,11 @@ margin-top: 10px;
 <button onclick="showPage('status')">
 📊 وضعیت پروژه
 </button>
+
 </div>
 
 <div class="card">
+
 <h2>🎯 وضعیت فعلی</h2>
 
 <div class="status">
@@ -212,14 +214,15 @@ margin-top: 10px;
 <button class="secondary" onclick="loadDashboard()">
 🔄 بروزرسانی
 </button>
+
 </div>
 
 </section>
 
-<!-- TASKS -->
 <section id="tasks" class="page">
 
 <div class="card">
+
 <h2>📋 Taskها</h2>
 
 <div id="taskList">
@@ -227,14 +230,15 @@ margin-top: 10px;
 در حال دریافت Taskها...
 </div>
 </div>
+
 </div>
 
 </section>
 
-<!-- PLANNER -->
 <section id="planner" class="page">
 
 <div class="card">
+
 <h2>🧠 برنامه پیشنهادی</h2>
 
 <p>
@@ -246,14 +250,15 @@ margin-top: 10px;
 </button>
 
 <div id="planResult"></div>
+
 </div>
 
 </section>
 
-<!-- STATUS -->
 <section id="status" class="page">
 
 <div class="card">
+
 <h2>📊 وضعیت پروژه</h2>
 
 <div class="status">
@@ -280,29 +285,33 @@ margin-top: 10px;
 <span>به تعویق افتاده</span>
 <strong id="s_deferred">-</strong>
 </div>
+
 </div>
 
 </section>
 
 </div>
 
-<!-- NAVIGATION -->
-
 <nav>
 
-<button id="navHome" class="active" onclick="showPage('home')">
+<button id="navHome"
+class="active"
+onclick="showPage('home')">
 🏠 خانه
 </button>
 
-<button id="navTasks" onclick="showPage('tasks')">
+<button id="navTasks"
+onclick="showPage('tasks')">
 📋 Task
 </button>
 
-<button id="navPlanner" onclick="showPage('planner')">
+<button id="navPlanner"
+onclick="showPage('planner')">
 🧠 Planner
 </button>
 
-<button id="navStatus" onclick="showPage('status')">
+<button id="navStatus"
+onclick="showPage('status')">
 📊 وضعیت
 </button>
 
@@ -312,8 +321,8 @@ margin-top: 10px;
 
 const tg =
 window.Telegram &&
-Telegram.WebApp
-? Telegram.WebApp
+window.Telegram.WebApp
+? window.Telegram.WebApp
 : null;
 
 if (tg) {
@@ -338,24 +347,33 @@ document.getElementById("welcome").textContent =
 "خوش آمدی " +
 (user.first_name || "دوست") +
 " 👋";
-}
+
 }
 
-/*
-• بعداً این آدرس را با آدرس عمومی HTTPS
-• سرور AGI_CORE جایگزین می‌کنیم.
-• فعلاً API روی localhost است و GitHub
-• نمی‌تواند به آن دسترسی داشته باشد.
-*/
+}
 
-const API_URL = "";
+const API_URL =
+"https://currently-textile-plates-briefing.trycloudflare.com";
+
+
+function getTelegramHeaders() {
+
+return {
+"X-Telegram-Init-Data":
+tg ? tg.initData : ""
+};
+
+}
+
 
 function showPage(page) {
 
 document
 .querySelectorAll(".page")
-.forEach(function (element) {
+.forEach(function(element) {
+
 element.classList.remove("active");
+
 });
 
 const target =
@@ -367,36 +385,50 @@ target.classList.add("active");
 
 document
 .querySelectorAll("nav button")
-.forEach(function (button) {
+.forEach(function(button) {
+
 button.classList.remove("active");
+
 });
 
 if (page === "home") {
+
 document
 .getElementById("navHome")
 .classList.add("active");
+
 }
 
 if (page === "tasks") {
+
 document
 .getElementById("navTasks")
 .classList.add("active");
 
 loadTasks();
+
 }
 
 if (page === "planner") {
+
 document
 .getElementById("navPlanner")
 .classList.add("active");
+
 }
 
 if (page === "status") {
+
 document
 .getElementById("navStatus")
 .classList.add("active");
+
+loadDashboard();
+
 }
+
 }
+
 
 async function loadDashboard() {
 
@@ -408,8 +440,19 @@ try {
 
 const response =
 await fetch(
-API_URL + "/dashboard"
+API_URL + "/dashboard",
+{
+headers: getTelegramHeaders()
+}
 );
+
+if (!response.ok) {
+
+throw new Error(
+"HTTP " + response.status
+);
+
+}
 
 const data =
 await response.json();
@@ -424,13 +467,32 @@ data.status.completed;
 
 document.getElementById("pending").textContent =
 data.status.pending;
+
+document.getElementById("s_total").textContent =
+data.status.total;
+
+document.getElementById("s_completed").textContent =
+data.status.completed;
+
+document.getElementById("s_pending").textContent =
+data.status.pending;
+
+document.getElementById("s_progress").textContent =
+data.status.in_progress;
+
+document.getElementById("s_deferred").textContent =
+data.status.deferred;
+
 }
 
 } catch (error) {
 
-console.log(error);
+console.log("Dashboard error:", error);
+
 }
+
 }
+
 
 async function loadTasks() {
 
@@ -439,27 +501,45 @@ document.getElementById("taskList");
 
 if (!API_URL) {
 
-container.innerHTML = &lt;div class="loading"&gt; 🔌 اتصال API هنوز فعال نشده است. &lt;br&gt;&lt;br&gt; سرور AGI_CORE آماده است؛ در مرحله بعد آدرس عمومی API را وصل می‌کنیم. &lt;/div&gt;;
+container.innerHTML =
+"<div class='loading'>" +
+"🔌 اتصال API فعال نشده است." +
+"</div>";
 
 return;
+
 }
 
 try {
 
 const response =
 await fetch(
-API_URL + "/tasks"
+API_URL + "/tasks",
+{
+headers: getTelegramHeaders()
+}
 );
+
+if (!response.ok) {
+
+throw new Error(
+"HTTP " + response.status
+);
+
+}
 
 const tasks =
 await response.json();
 
-if (!tasks.length) {
+if (!Array.isArray(tasks) || !tasks.length) {
 
 container.innerHTML =
-"<div class='loading'>Taskی وجود ندارد.</div>";
+"<div class='loading'>" +
+"Taskی وجود ندارد." +
+"</div>";
 
 return;
+
 }
 
 container.innerHTML = "";
@@ -471,33 +551,72 @@ document.createElement("div");
 
 div.className = "task";
 
-div.innerHTML = &lt;div class="task-title"&gt; #${task.id} — `${task.title}
-</div>
+const title =
+document.createElement("div");
 
-<div class="task-info">
-وضعیت: $`{task.status}
-</div>
+title.className =
+"task-title";
 
-<div class="task-info">
-زمان: ${task.estimated_minutes || 0} دقیقه &lt;/div&gt;;
+title.textContent =
+"#" + task.id +
+" — " +
+(task.title || "بدون عنوان");
+
+const status =
+document.createElement("div");
+
+status.className =
+"task-info";
+
+status.textContent =
+"وضعیت: " +
+(task.status || "-");
+
+const time =
+document.createElement("div");
+
+time.className =
+"task-info";
+
+time.textContent =
+"زمان: " +
+(task.estimated_minutes || 0) +
+" دقیقه";
+
+div.appendChild(title);
+div.appendChild(status);
+div.appendChild(time);
 
 container.appendChild(div);
+
 });
 
 } catch (error) {
 
+console.log("Tasks error:", error);
+
 container.innerHTML =
-"<div class='error'>خطا در اتصال به API</div>";
+"<div class='error'>" +
+"خطا در اتصال به API" +
+"</div>";
+
 }
+
 }
+
 
 function requestPlan() {
 
 const result =
 document.getElementById("planResult");
 
-result.innerHTML = &lt;div class="loading"&gt; 🧠 Planner در مرحله اتصال به API قرار دارد. &lt;/div&gt;;
+result.innerHTML =
+"<div class='loading'>" +
+"🧠 Planner در مرحله اتصال به API قرار دارد." +
+"</div>";
+
 }
+
 
 loadDashboard();
 
