@@ -605,15 +605,51 @@ container.innerHTML =
 }
 
 
-function requestPlan() {
+async function requestPlan() {
 
 const result =
 document.getElementById("planResult");
 
 result.innerHTML =
 "<div class='loading'>" +
-"🧠 Planner در مرحله اتصال به API قرار دارد." +
+"🧠 در حال ساخت برنامه پیشنهادی..." +
 "</div>";
+
+try {
+
+const response =
+await fetch(
+API_URL + "/planner",
+{
+headers: getTelegramHeaders()
+}
+);
+
+const data =
+await response.json();
+
+if (!response.ok) {
+throw new Error(
+data.message ||
+data.error ||
+"خطا در دریافت برنامه"
+);
+}
+
+result.innerHTML =
+"<div class='plan-box'>" +
+(data.plan || data.formatted || JSON.stringify(data)) +
+"</div>";
+
+} catch (error) {
+
+result.innerHTML =
+"<div class='loading'>" +
+"❌ خطا: " +
+error.message +
+"</div>";
+
+}
 
 }
 
